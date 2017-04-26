@@ -1,22 +1,6 @@
 #coding=utf-8
 import tensorflow as tf
 
-# Parameters
-learning_rate = 0.001
-training_iters = 200000
-batch_size = 64
-display_step = 20
-
-# Network Parameters
-n_input = 224*224 # data input (img shape: 28*28) (修改)
-n_classes = 3 # MNIST total classes (0-9 digits)   （三类）
-dropout = 0.8 # Dropout, probability to keep units
-
-# tf Graph input
-x = tf.placeholder("float", [None, n_input])
-y = tf.placeholder("float", [None, n_classes])
-keep_prob = tf.placeholder("float") # dropout (keep probability)
-
 # 根据shape定义卷积核 与 偏置
 def weight_variable(shape,name):
     init = tf.truncated_normal(shape, stddev=0.1, name=name)
@@ -52,7 +36,7 @@ def norm(name, l_input, lsize=4):
 
 
   
-# 定义网络
+# 定义网络  返回所有参数方便可视化
 def model(_X, _weights, _biases, _dropout):
     # Reshape input picture
     _X = tf.reshape(_X, shape=[-1, 224, 224, 1])
@@ -110,7 +94,12 @@ def model(_X, _weights, _biases, _dropout):
     # Output, class prediction
     with tf.name_scope('out_layer') as scope:
         out = tf.matmul(dense2, _weights['out']) + _biases['out']
-    return out
+    # return everything
+    out_all = out = {
+            'input_r': _X, 'conv1': conv1, 'conv2': conv2, 'conv3': conv3,'conv4':conv4
+            , 'pool': pool1, 'poo2': pool2, 'poo3': pool3, 'poo4': pool4, 'dense1': dense1,'dense2':dense2, 'out': out
+        }
+    return out_all
 
 # Store layers weight & bias
 weights = {
@@ -120,7 +109,7 @@ weights = {
     'wc4': weight_variable([2,2,256,512],"weight"),   #fully connect layer
     'wd1': weight_variable([2*2*512，1024],"weight"),        # 数值要修改
     'wd2': weight_variable([1024，1024],"weight"),
-    'out': tf.Variable(tf.random_normal([1024, 3]))  #最终生成3类
+    'out': tf.Variable(tf.random_normal([1024, 3]),"out")  #最终生成3类
 }
 biases = {
     'bc1': bais_variable([64], "bias"),
@@ -131,3 +120,85 @@ biases = {
     'bd2': bais_variable([1024], "bias"),
     'out': bais_variable([n_classes], "bias"),
 }
+
+
+# 保存模型
+# saver = tf.train.Saver()
+def save_model(saver, sess, savePath):
+    if not os.path.exists(savePath): os.mkdir(savePath)
+    path=saver.save(sess, savePath)
+    print("model save in :{0}".format(path))
+
+# 读取模型
+# 恢复模型时需定义两个参数，参数名称需要与模型中的变量名相同
+#W = tf.Variable(np.arange(6).reshape((2,3)),dtype = tf.float32,name='weight')  
+#b = tf.Variable(np.arange(3).reshape((1,3)),dtype = tf.float32,name='biases')  
+def read_model(saver, sess, path):
+    model = saver.restore(sess, path)
+    #print("weights:", sess.run(W))
+    #print("biases:", sess.run(b))
+
+
+
+# Parameters
+learning_rate = 0.001
+training_iters = 200000 # 迭代次数
+training_epochs = 10
+batch_size = 64
+display_step = 20
+    
+# Network Parameters
+n_input = 224*224 # data input (img shape: 28*28) (修改)
+n_classes = 3 # MNIST total classes (0-9 digits)   （三类）
+dropout = 0.8 # Dropout, probability to keep units
+    
+# tf Graph input
+x = tf.placeholder("float", [None, n_input])
+y = tf.placeholder("float", [None, n_classes])
+keep_prob = tf.placeholder("float") # dropout (keep probability)    
+
+# 构造目标函数
+pred = model(x,weights,biases, keep_prob)['out']  # forward
+
+# define loss and optimizer
+with tf.name_scope('result') as scope:
+    cross_entropy_cnn = -y * tf.nn.log_softmax(pred)
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y), name='cost')
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+    
+    # Evaluate model
+    correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy') 
+    
+# 可视化设置要跟踪的对象   
+cost_summary = tf.scalar_summary(cost.op.name, cost)
+accuracy_summary = tf.scalar_summary(accuracy.op.name, accuracy)
+
+# Initializing the variables
+init = tf.initialize_all_variables()
+summary_op = tf.merge_summary([cost_summary, accuracy_summary])
+
+# 这里需要修改 数据源
+# Launch the graph
+with tf.Session() as sess:
+    sess.run(init)
+    summary_writer = tf.train.SummaryWriter('/logs', graph=sess.graph)
+    step = 1
+    # Keep training until reach max iterations
+    while step * batch_size < training_iters:
+        batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+        # Fit training using batch data
+        sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys, keep_prob: dropout})
+        if step % display_step == 0:
+            # Calculate batch accuracy
+            acc = sess.run(accuracy, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            # Calculate batch loss
+            loss = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            print ("Iter " + str(step*batch_size) + ", Minibatch Loss= " + "{:.6f}".format(loss) + ", Training Accuracy= " + "{:.5f}".format(acc))
+            summary_str = sess.run(merge, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            summary_writer.add_summary(summary_str, step)
+        step += 1
+    print ("Optimization Finished!")
+    # Calculate accuracy for 256 mnist test images
+    print ("Testing Accuracy:", sess.run(accuracy, feed_dict={x: mnist.test.images[:256], y: mnist.test.labels[:256], keep_prob: 1.}))
+#程序运行结束后关闭文件并刷新到硬盘  
