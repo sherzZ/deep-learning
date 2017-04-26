@@ -103,20 +103,21 @@ biases = {
 pred = customnet(x, weights, biases, keep_prob)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+with tf.name_scope('result') as scope:
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y), name='cost')
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
-# Evaluate model
-correct_pred = tf.equal(tf.argmax(pred,1), tf.argmax(y,1))
-accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+    # Evaluate model
+    correct_pred = tf.equal(tf.argmax(pred,1), tf.argmax(y,1))
+    accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
 
 # Initializing the variables
 init = tf.initialize_all_variables()
-# 
-tf.scalar_summary("loss", cost)
-tf.scalar_summary("accuracy", accuracy)
+
+cost_summary = tf.scalar_summary(cost.op.name, cost)
+accuracy_summary = tf.scalar_summary(accuracy.op.name, accuracy)
 # Merge all summaries to a single operator
-merged = tf.merge_all_summaries() 
+merge = tf.merge_summary([cost_summary, accuracy_summary])
 
 # Launch the graph
 with tf.Session() as sess:
@@ -134,7 +135,7 @@ with tf.Session() as sess:
             # Calculate batch loss
             loss = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
             print ("Iter " + str(step*batch_size) + ", Minibatch Loss= " + "{:.6f}".format(loss) + ", Training Accuracy= " + "{:.5f}".format(acc))
-            summary_str = sess.run(merged, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            summary_str = sess.run(merge, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
             summary_writer.add_summary(summary_str, step)
         step += 1
     print ("Optimization Finished!")
