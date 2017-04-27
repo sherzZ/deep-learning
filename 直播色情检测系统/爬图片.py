@@ -2,6 +2,8 @@
 import re
 import urllib.request
 from collections import deque
+import threading
+from time import ctime,sleep
 
 def getHtml(url):
     request = urllib.request.Request(url)
@@ -17,7 +19,7 @@ def getHtml(url):
     return html
 
 # 熊猫tv
-def get_image_panda(html, startIndex=1):
+def get_image_panda(html, path,startIndex=1):
     regex = r'<img (.*?)>'
     pattern = re.compile(regex,re.I|re.S|re.M) # 将正则表达式编译成pattern对象
     data=pattern.findall(html) # 以列表形式返回所有匹配的子串
@@ -27,14 +29,14 @@ def get_image_panda(html, startIndex=1):
         img_url = data_original.split("\"")[1]
         print(img_url)
         image = download_page(img_url)
-        with open("F:\训练图片\熊猫星秀\%s.jpg"%num,'wb') as fp:
+        with open(path+"%s.jpg"%num,'wb') as fp:
             fp.write(image)
             num+=1
             print("正在下载第%s张图片"%num)
-    return
+    return num
 
 # 斗鱼tv 
-def get_image_douyu(html,startIndex=1):
+def get_image_douyu(html,path,startIndex=1):
     regex = r'<img (.*?)>'
     pattern = re.compile(regex,re.I|re.S|re.M) # 将正则表达式编译成pattern对象
     data=pattern.findall(html) # 以列表形式返回所有匹配的子串
@@ -47,12 +49,12 @@ def get_image_douyu(html,startIndex=1):
             img_url = d2.split(" ")[0].split("\"")[1]
             print(img_url)
             image = download_page(img_url)
-            with open("F:\训练图片\斗鱼星秀\%s.jpg"%num,'wb') as fp:
+            with open(path+"%s.jpg"%num,'wb') as fp:
                 fp.write(image)
                 num+=1
                 print("正在下载第%s张图片"%num)
         #print(d)
-    return
+    return num
 
 def download_page(url):
     request = urllib.request.Request(url)
@@ -61,8 +63,20 @@ def download_page(url):
     return data
     
 
-
-
+def getImage(num,path):
+    num =num;
+    # 熊猫
+    html=getHtml(url)
+    num=get_image_panda(html,path,num)    
+    
+    #斗鱼
+    html_douyu=getHtml(url_douyu)
+    num=get_image_douyu(html_douyu,path,num)   
+    
+    #斗鱼颜值
+    html_douyu=getHtml(url_douyu_yanzhi)
+    num = get_image_douyu(html_douyu,path,num)  
+    return num
 
 class switch(object):
     def __init__(self, value):
@@ -83,21 +97,29 @@ class switch(object):
             return True
         else:
             return False
-value=1
+#value=1
 url = "http://www.panda.tv/cate/yzdr"
 url_douyu = "https://www.douyu.com/directory/game/xx"
 url_douyu_yanzhi = "https://www.douyu.com/directory/game/yz"
 
-for case in switch(value):
-    if(case(1)):
-        # 熊猫
-        html=getHtml(url)
-        get_image_panda(html,239) 
-    if(case(2)):
-        #斗鱼
-        html_douyu=getHtml(url_douyu)
-        get_image_douyu(html_douyu,365)   
-    if(case(3)):
-        #斗鱼颜值
-        html_douyu=getHtml(url_douyu_yanzhi)
-        get_image_douyu(html_douyu,245)         
+num =1
+path = "F:\\爬图图片\\"
+while True:
+    num = getImage(num,path)
+    sleep(300)
+
+       
+
+#for case in switch(value):
+    #if(case(1)):
+        ## 熊猫
+        #html=getHtml(url)
+        #get_image_panda(html,239) 
+    #if(case(2)):
+        ##斗鱼
+        #html_douyu=getHtml(url_douyu)
+        #get_image_douyu(html_douyu,365)   
+    #if(case(3)):
+        ##斗鱼颜值
+        #html_douyu=getHtml(url_douyu_yanzhi)
+        #get_image_douyu(html_douyu,245)         
