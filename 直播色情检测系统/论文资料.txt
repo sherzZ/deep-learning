@@ -28,6 +28,8 @@ http://blog.csdn.net/bill_zhang5/article/details/69283353
 http://blog.csdn.net/thriving_fcl/article/details/50909109
 必看
 http://www.cnblogs.com/wuzhitj/p/6298004.html
+http://www.cnblogs.com/houkai/p/6553221.html
+http://blog.csdn.net/u010402786/article/details/52433324
 
 
 可视化卷积
@@ -37,3 +39,23 @@ http://www.cnblogs.com/huxi/archive/2010/07/04/1771073.html
 http://blog.csdn.net/eastmount/article/details/51082253
 手机抓包
 http://www.th7.cn/Program/IOS/201603/787178.shtml
+雅虎模型
+http://blog.csdn.net/tangwenbo124/article/details/56070322
+http://hacker.duanshishi.com/?p=1690
+http://www.leiphone.com/news/201606/BhcC5LV32tdot6DD.html?viewType=weixin
+http://blog.csdn.net/zackzhaoyang/article/details/51657305
+http://it.sohu.com/20161030/n471785247.shtml
+http://blog.csdn.net/mao_feng/article/details/52734438
+
+https://github.com/jay-mahadeokar/pynetbuilder
+重点 http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2650719529&idx=1&sn=e99d95427ce67c32323be5310b767b7c&chksm=871b0157b06c88412d9b933805f5ca3a30df745a8ac147f35204e545c250f42e68c57312cbec&scene=21#wechat_redirect
+
+# 色情视频检测模型
+http://it.sohu.com/20161118/n473508109.shtml
+
+# tensorflow各网络参数
+D:\Anaconda3\envs\tensorflow\Lib\site-packages\tensorflow\contrib\slim\python\slim\nets
+
+# RSNN
+https://github.com/KaimingHe/deep-residual-networks
+http://ethereon.github.io/netscope/#/gist/db945b393d40bfa26006
