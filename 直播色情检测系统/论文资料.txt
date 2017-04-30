@@ -53,6 +53,9 @@ https://github.com/jay-mahadeokar/pynetbuilder
 # 色情视频检测模型
 http://it.sohu.com/20161118/n473508109.shtml
 
+肤色检测
+http://blog.csdn.net/gxf1027/article/details/8264794
+
 # tensorflow各网络参数
 D:\Anaconda3\envs\tensorflow\Lib\site-packages\tensorflow\contrib\slim\python\slim\nets
 
