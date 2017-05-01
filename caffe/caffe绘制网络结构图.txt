@@ -1,0 +1,1 @@
+python ./python/draw_net.py ./models/bvlc_reference_caffenet/train_val.prototxt ~/Desktop/caffenet.png

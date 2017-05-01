@@ -1,0 +1,4 @@
+convert_imageset.exe --resize_width=227 --resize_height=227 --shuffle=true E:\wingIde\PaperCNN\  E:\wingIde\PaperCNN\train.txt E:\wingIde\PaperCNN\train_db
+convert_imageset.exe --resize_width=227 --resize_height=227 --shuffle=true E:\wingIde\PaperCNN\  E:\wingIde\PaperCNN\val.txt E:\wingIde\PaperCNN\test_db
+compute_image_mean.exe E:\wingIde\PaperCNN\train_db E:\wingIde\PaperCNN\mean\train_mean.binaryproto
+compute_image_mean.exe E:\wingIde\PaperCNN\test_db E:\wingIde\PaperCNN\mean\test_mean.binaryproto

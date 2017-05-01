@@ -1,0 +1,23 @@
+python plot_training_log.py 0 save.png model_train.log
+python plot_training_log.py 1 test_accuracy_second.png model_train.log
+python plot_training_log.py 2 test_loss_iter.png model_train.log
+python plot_training_log.py 3 test_loss_seconds.png model_train.log
+python plot_training_log.py 4 trainLearningRate_iter.png model_train.log
+python plot_training_log.py 5 trainLearningRate_second.png model_train.log
+python plot_training_log.py 6 trainLoss_iter.png model_train.log
+python plot_training_log.py 7 trainLoss_seconds.png model_train.log
+
+1 Supported chart types: 
+2 0: Test accuracy vs. Iters 
+3 1: Test accuracy vs. Seconds 
+4 2: Test loss vs. Iters 
+5 3: Test loss vs. Seconds 
+6 4: Train learning rate vs. Iters 
+7 5: Train learning rate vs. Seconds 
+8 6: Train loss vs. Iters 
+9 7: Train loss vs. Seconds 
+
+将输出重定向到文件
+caffe train \  
+  --solver=deepid/deepid2/deepid_solver.prototxt >log/XXXXX.log 2>&1
+pause
