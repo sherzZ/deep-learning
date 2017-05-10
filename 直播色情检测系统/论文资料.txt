@@ -62,6 +62,8 @@ D:\Anaconda3\envs\tensorflow\Lib\site-packages\tensorflow\contrib\slim\python\sl
 # RSNN
 https://github.com/KaimingHe/deep-residual-networks
 http://ethereon.github.io/netscope/#/gist/db945b393d40bfa26006
+c++资料大全
+http://www.csdn.net/article/2014-10-24/2822269-c++
 
 安装tensorflow
 pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/windows/cpu/tensorflow-1.0.1-cp35-cp35m-win_amd64.whl
