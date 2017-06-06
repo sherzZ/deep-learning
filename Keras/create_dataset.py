@@ -28,8 +28,8 @@ data_dir_list = os.listdir(data_path)
 for data in data_dir_list:
     print(data)
     
-img_rows =254
-img_col = 254
+img_rows =256
+img_col = 256
 num_channel = 1
 num_epoch = 20
 
@@ -48,13 +48,20 @@ for dataset in data_dir_list:
         #cv2.destroyAllWindows()
         #input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
         if input_img is not None:
+            #print(input_img.shape)            
+            lbp = local_binary_pattern(input_img, n_points, radius) # 提取LBS纹理特征
+            max_bins = int(lbp.max() + 1);
+            input_img,_ = np.histogram(lbp, normed=True, bins=max_bins, range=(0, max_bins));
             #print(input_img.shape)
-            input_img_resize = cv2.resize(input_img, (254,254))
-            input_img_resize= local_binary_pattern(input_img_resize, n_points, radius) # 提取LBS纹理特征
-            img_data_list.append(input_img_resize)
+            input_img_resize = cv2.resize(input_img, (img_rows,img_col))
+            #print(input_img_resize.shape)
+            img_data_list.append(input_img)
     print(len(img_data_list))
         
 img_data = np.array(img_data_list)
+img_data = img_data.astype('float32')
+img_data /= 255
+
 print(img_data.shape)
 img_data = np.expand_dims(img_data, axis=4) # 因为用的tensorflow(num of samples, img_size,img_size, channelss)
 print(img_data.shape)
@@ -115,13 +122,13 @@ if USE_SKLEARN_PREPROCESSING:
     
 # save data
 
-file = open('train_data.dat','wb')
+file = open('train_data_hist.dat','wb')
 pickle.dump(img_data, file)
 file.close()
 
-read = open('train_data.dat','rb')
-read_data = pickle.load(read)
-print(read_data.shape)
+#read = open('train_data.dat','rb')
+#read_data = pickle.load(read)
+#print(read_data.shape)
 # label
 num_of_samples = img_data.shape[0]
 labels = np.ones((num_of_samples,), dtype='int64')
