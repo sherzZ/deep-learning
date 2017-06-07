@@ -28,8 +28,8 @@ data_dir_list = os.listdir(data_path)
 for data in data_dir_list:
     print(data)
     
-img_rows =256
-img_col = 256
+img_rows =127
+img_col = 127
 num_channel = 1
 num_epoch = 20
 
@@ -51,11 +51,11 @@ for dataset in data_dir_list:
             #print(input_img.shape)            
             lbp = local_binary_pattern(input_img, n_points, radius) # 提取LBS纹理特征
             max_bins = int(lbp.max() + 1);
-            input_img,_ = np.histogram(lbp, normed=True, bins=max_bins, range=(0, max_bins));
+            img_hist,_ = np.histogram(lbp, normed=True, bins=max_bins, range=(0, max_bins));
             #print(input_img.shape)
-            input_img_resize = cv2.resize(input_img, (img_rows,img_col))
+            input_img_resize = cv2.resize(img_hist, (img_rows,img_col))
             #print(input_img_resize.shape)
-            img_data_list.append(input_img)
+            img_data_list.append(input_img_resize)       
     print(len(img_data_list))
         
 img_data = np.array(img_data_list)
