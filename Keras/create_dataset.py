@@ -20,16 +20,16 @@ radius = 3
 n_points = 8 * radius
 
 PATH = os.getcwd()
-
-data_path = PATH+'/data/train'
+path = 'E:\\wingIde\\Keras'
+data_path = path+'/data/train'
 data_dir_list = os.listdir(data_path)
 
 
 for data in data_dir_list:
     print(data)
     
-img_rows =127
-img_col = 127
+img_rows =256
+img_col = 256
 num_channel = 1
 num_epoch = 20
 
@@ -149,8 +149,8 @@ pickle.dump(Y,file)
 file.close()
 
 #Shuffle the dataset
-x,y = shuffle(img_data,Y, random_state=2)
+#x,y = shuffle(img_data,Y, random_state=2)
 
 # Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
+#X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
 
